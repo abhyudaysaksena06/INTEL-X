@@ -80,11 +80,21 @@ export async function signOut() {
   if (supabase) await supabase.auth.signOut();
 }
 
-/** True when the signed-in user is listed in the admins table. */
+/**
+ * True when the signed-in user is listed in the admins table.
+ *
+ * Asks the database via is_admin(), which is SECURITY DEFINER — reading the
+ * admins table directly would itself be filtered by that table's own RLS, so a
+ * missing policy there would make every admin look like a stranger.
+ */
 export async function isAdmin() {
   if (!supabase) return false;
-  const { data, error } = await supabase.from("admins").select("user_id").limit(1);
-  return !error && (data?.length ?? 0) > 0;
+  const { data, error } = await supabase.rpc("is_admin");
+  if (error) {
+    console.error("[admin] is_admin ", error);
+    return false;
+  }
+  return data === true;
 }
 
 /**
