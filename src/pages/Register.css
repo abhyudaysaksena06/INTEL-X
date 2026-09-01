@@ -1,0 +1,62 @@
+/* Registration — the contact page's paper-and-board treatment.
+   The inputs ride on the shared `paper-field` utility; these rules add the
+   invalid state and the squad-size selector. */
+
+.register-page .reg-field {
+  margin-bottom: 0.35rem;
+}
+
+.register-page .paper-field.is-invalid {
+  border-color: rgba(140, 30, 20, 0.8);
+  background-color: rgba(150, 40, 25, 0.08);
+}
+
+/* Squad size: four stamped chips, the chosen one inked in */
+.register-page .reg-count {
+  min-width: 3rem;
+  padding: 0.45rem 0;
+  border: 1px solid rgba(60, 45, 30, 0.55);
+  background-color: rgba(70, 45, 20, 0.07);
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.register-page .reg-count:hover {
+  border-color: rgba(60, 45, 30, 0.95);
+  background-color: rgba(70, 45, 20, 0.14);
+}
+
+.register-page .reg-count:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+.register-page .reg-count.is-active {
+  border-color: rgba(60, 45, 30, 0.95);
+  background-color: oklch(0.22 0.01 60);
+  color: oklch(0.92 0.02 85);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* member blocks swap in as the squad size changes */
+.register-page .reg-member {
+  animation: rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-page .reg-member {
+    animation: none;
+  }
+
+  .register-page .paper-field,
+  .register-page .reg-count {
+    transition: none;
+  }
+}

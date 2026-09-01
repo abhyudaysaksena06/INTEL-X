@@ -1,0 +1,13 @@
+/* Ops map — label type scales with the MAP's width, so the pins, the
+   connectors and the labels all shrink together as one arrangement. */
+.ops-map {
+  container-type: inline-size;
+}
+
+.ops-label-main {
+  font-size: clamp(10px, 1.5cqw, 16px);
+}
+
+.ops-label-child {
+  font-size: clamp(9px, 1.15cqw, 12px);
+}

@@ -1,0 +1,160 @@
+/* Hero mission countdown.
+ *
+ * Laptop and up: a large panel tucked into the hero's bottom-right corner.
+ * Below that the hero's own furniture (the two CTAs, the bottom-left
+ * coordinates, the centre signal indicator) leaves no corner big enough for
+ * it, so the panel reflows into a single full-width bar pinned to the bottom
+ * edge, clear of everything above it.
+ */
+
+.intel-countdown {
+  animation: rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 620ms;
+
+  /* laptop and up */
+  right: clamp(1.25rem, 2.5vw, 2.5rem);
+  bottom: clamp(5.5rem, 8vh, 7rem);
+}
+
+.countdown-digit {
+  font-size: clamp(2.25rem, 3.6vw, 3.75rem);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 26px color-mix(in oklab, var(--cyan) 40%, transparent);
+}
+
+.countdown-sep {
+  font-size: clamp(1.15rem, 1.8vw, 1.875rem);
+  padding-bottom: clamp(1rem, 1.6vw, 2rem);
+  animation: hud-blink 2s ease-in-out infinite;
+}
+
+.cd-unit-label {
+  font-size: clamp(9px, 0.8vw, 11px);
+}
+
+.cd-engaged {
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+}
+
+/* ---------------------------------------------------------------- tablet
+   and below: one horizontal bar across the bottom of the hero. */
+@media (max-width: 1023px) {
+  .intel-countdown {
+    left: clamp(0.75rem, 3vw, 1.5rem);
+    right: clamp(0.75rem, 3vw, 1.5rem);
+    /* the hero is 100vh but starts below the sticky navbar, so the page runs
+       taller than the viewport — the bottom offset has to clear the navbar
+       or the bar lands under the fold */
+    bottom: clamp(4rem, 15vh, 12rem);
+  }
+
+  .intel-countdown .cd-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    /* it now sits over the HUD's coordinates and signal marks, so it needs to
+       read as a solid surface rather than a translucent one */
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .intel-countdown .cd-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .intel-countdown .cd-head > p {
+    white-space: nowrap;
+  }
+
+  .intel-countdown .cd-rule {
+    display: none;
+  }
+
+  .intel-countdown .cd-units {
+    margin-top: 0;
+  }
+
+  .countdown-digit {
+    font-size: clamp(1.25rem, 4.2vw, 2rem);
+  }
+
+  .countdown-sep {
+    font-size: clamp(0.8rem, 2.2vw, 1.15rem);
+    padding-bottom: clamp(0.6rem, 1.5vw, 0.9rem);
+  }
+
+  .cd-engaged {
+    margin-top: 0;
+    font-size: clamp(1.35rem, 4.4vw, 2rem);
+  }
+}
+
+/* Phones: the hero's own copy and CTAs already fill a short screen, so the
+   bar moves to the top of the hero — flush under the header, where it is
+   visible without scrolling and collides with nothing but decorative HUD
+   telemetry. Anchoring to the hero's top also sidesteps the navbar offset
+   that makes bottom placement land under the fold on short viewports. */
+@media (max-width: 639px), (max-height: 560px) {
+  .intel-countdown {
+    top: 0.75rem;
+    bottom: auto;
+    left: 0.75rem;
+    right: 0.75rem;
+  }
+}
+
+/* Phones: drop the secondary target chip, the label alone carries it. */
+@media (max-width: 560px) {
+  .intel-countdown .cd-head > span {
+    display: none;
+  }
+
+  .intel-countdown .cd-panel {
+    padding: 0.55rem 0.75rem;
+    gap: 0.6rem;
+  }
+
+  .countdown-digit {
+    font-size: clamp(1.05rem, 5vw, 1.6rem);
+  }
+
+  .countdown-sep {
+    font-size: clamp(0.7rem, 2.6vw, 1rem);
+    padding-bottom: 0.55rem;
+  }
+
+  .cd-unit-label {
+    font-size: 8px;
+    letter-spacing: 0.16em;
+  }
+}
+
+/* Landscape phones and other short viewports — vertical room is the
+   constraint, so trim height rather than width. */
+@media (max-height: 560px) {
+  .intel-countdown .cd-panel {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .countdown-digit {
+    font-size: clamp(1.05rem, 3.6vh, 1.5rem);
+  }
+
+  .cd-unit-label {
+    display: none;
+  }
+
+  .countdown-sep {
+    padding-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intel-countdown,
+  .countdown-sep {
+    animation: none;
+  }
+}
