@@ -47,8 +47,9 @@ export const OPS_PINS: OpsPin[] = [
     route: "MEX → SFO",
     gate: "B11",
     body: [
-      "Round 1 — Recon. Assemble your crew and file the opening manifest.",
-      "Duration: 24 hours. Payload: concept + prototype drop.",
+      "ROUND 1 — INTELLIGENCE INTAKE",
+      "Teams investigate suspicious people, cargo movements, financial activity and digital traces across multiple international airports.",
+      "They connect fragmented intelligence to identify which locations and operations are genuinely connected and which are false leads. The round establishes the first picture of the network.",
     ],
   },
   {
@@ -62,8 +63,9 @@ export const OPS_PINS: OpsPin[] = [
     route: "GRU → LIS",
     gate: "B12",
     body: [
-      "Round 2 — Transit. Move the payload past the border controls.",
-      "Duration: 24 hours. Checkpoint review at the halfway mark.",
+      "ROUND 2 — FIELD OPERATIONS",
+      "Teams use their collected intelligence to investigate specific airport hubs and follow the operational trail.",
+      "Through physical matching, filtering, reconstruction and verification challenges, they uncover how the network operates and where its next move may occur. Resources and evidence must be managed carefully.",
     ],
   },
   {
@@ -77,8 +79,9 @@ export const OPS_PINS: OpsPin[] = [
     route: "YQX → JFK",
     gate: "B13",
     body: [
-      "Round 3 — Extraction. Final delivery to the syndicate council.",
-      "Duration: 24 hours. Stakes: the full prize vault.",
+      "ROUND 3 — FINAL INTERCEPTION",
+      "Teams enter the command phase with the intelligence gathered from the previous rounds.",
+      "They interrogate witnesses, uncover historical evidence and analyze final forensic clues to identify the person behind the operation. The round ends with a high-stakes evidence-backed final decision.",
     ],
   },
   {
@@ -106,8 +109,12 @@ export const OPS_PINS: OpsPin[] = [
     route: "CLAUSE 01",
     gate: "C11",
     body: [
-      "Payload limits: max 4 operatives per crew, one manifest per crew.",
-      "All cargo must be original. Contraband from prior ops is seized.",
+      "ROUND 1 — THE BRIEF",
+      "1. Teams must consist of 4 members.",
+      "2. The round will have 3 stations, with 2 teams competing at each station.",
+      "3. Teams will receive a dossier containing clues and information.",
+      "4. A questionnaire/task will be provided based on the dossier.",
+      "5. Each game carries 20 points.",
     ],
   },
   {
@@ -121,8 +128,15 @@ export const OPS_PINS: OpsPin[] = [
     route: "CLAUSE 02",
     gate: "C12",
     body: [
-      "Border controls: deadlines are hard. Late manifests are impounded.",
-      "One checkpoint appeal permitted per crew, filed in writing.",
+      "ROUND 2 — THE HUNT",
+      "1. Each team starts with 100 credits.",
+      "2. Credits can be used to purchase dossiers and additional information.",
+      "3. Teams can investigate multiple locations.",
+      "4. Each location will have a different game/challenge.",
+      "5. Teams will encounter multiple suspects.",
+      "6. Different types of dossiers may be available, including Bluff, Good and Normal dossiers.",
+      "7. Scores will be added to the live leaderboard.",
+      "8. The top teams will qualify for Round 3.",
     ],
   },
   {
@@ -137,8 +151,12 @@ export const OPS_PINS: OpsPin[] = [
     route: "CLAUSE 03",
     gate: "C13",
     body: [
-      "Interception penalties: plagiarism, leaks, or tampering end the run.",
-      "Council rulings are final and unappealable.",
+      "ROUND 3 — THE FINAL ESCAPE",
+      "1. The round consists of two phases: Code Breaking and Interrogation.",
+      "2. In Code Breaking, teams solve offline games and challenges to collect clues/code components and combine them to find the final code.",
+      "3. Teams must enter the final code on the designated website, and points earned will be added.",
+      "4. In Interrogation, teams will analyse information about a few suspected passengers, along with clues, to identify the correct suspect and escape route.",
+      "5. Teams must complete the final questionnaire within the last 15 minutes; correct answers will earn the designated points.",
     ],
   },
   {

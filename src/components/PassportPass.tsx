@@ -1,6 +1,6 @@
-import { Plane, ShieldCheck, Stamp } from "lucide-react";
+import { Plane, ShieldCheck, Stamp, X } from "lucide-react";
 import type { OpsPin } from "@/lib/ops-pins";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 function Barcode() {
   const bars = Array.from({ length: 48 }, (_, i) => ((i * 37) % 5) + 1);
@@ -27,7 +27,10 @@ export function PassportPass({
 }) {
   return (
     <Dialog open={!!pin} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-xl overflow-hidden border-primary/40 bg-card/95 p-0 backdrop-blur-xl">
+      <DialogContent
+        hideClose
+        className="max-w-xl overflow-hidden border-primary/40 bg-card/95 p-0 backdrop-blur-xl"
+      >
         {pin && (
           <div className="relative">
             <div className="pointer-events-none absolute inset-0 opacity-40 [background:radial-gradient(120%_80%_at_100%_0%,color-mix(in_oklab,var(--primary)_22%,transparent),transparent_60%)]" />
@@ -37,8 +40,12 @@ export function PassportPass({
                 <Plane className="size-3.5" />
                 Boarding Pass
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-                INTEL X
+              <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                Intel
+                <DialogClose className="ml-0.5 cursor-pointer rounded-sm p-1 text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                  <X className="size-3.5" strokeWidth={2.5} />
+                  <span className="sr-only">Close</span>
+                </DialogClose>
               </span>
             </div>
 
@@ -67,7 +74,7 @@ export function PassportPass({
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 space-y-3 text-sm leading-relaxed text-muted-foreground">
+                <div className="mt-5 space-y-2 text-sm leading-relaxed text-muted-foreground">
                   {pin.body.map((line) => (
                     <p key={line}>{line}</p>
                   ))}
