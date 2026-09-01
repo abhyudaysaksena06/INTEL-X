@@ -238,7 +238,7 @@ function CaseFileHeader() {
       >
         CASE FILE — IX-2214
         <br />
-        <span style={{ color: COLORS.red }}>CLASSIFICATION: RESTRICTED</span>
+        <span style={{ color: COLORS.amber }}>CLASSIFICATION: RESTRICTED</span>
       </div>
     </section>
   );
