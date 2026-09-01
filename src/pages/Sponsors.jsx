@@ -1,17 +1,8 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-import { Radar, FileText, DollarSign, Lock } from 'lucide-react';
+import { Radar } from 'lucide-react';
 
 /* ============================== UTILS ============================== */
 
-function mulberry32(seed) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
 const COLORS = {
@@ -172,17 +163,6 @@ function useScrollProgress() {
 
 /* ========================== SMALL PIECES ========================== */
 
-function Tag({ color, name }) {
-  return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border" style={{ borderColor: color }}>
-      <span className="rounded-full" style={{ width: 6, height: 6, background: color }} />
-      <span style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.15em', color: COLORS.text }}>
-        {name}
-      </span>
-    </div>
-  );
-}
-
 function RevealLine({ inView, delay, children, style }) {
   return (
     <div
@@ -265,221 +245,7 @@ function CaseFileHeader() {
   );
 }
 
-/* ======================== SPONSORS — ALL AT ONCE ======================== */
-
-const SPONSORS = [
-  {
-    name: 'MERIDIAN FREIGHT',
-    label: 'ENTITY 01 — CUSTOMS TRAIL',
-    accent: COLORS.amber,
-    icon: FileText,
-    flavor: 'MANIFEST IX-77042 · 3 UNLISTED PORT CALLS',
-  },
-  {
-    name: 'VANTAGE HOLDINGS',
-    label: 'ENTITY 02 — FINANCIAL TRAIL',
-    accent: COLORS.finance,
-    icon: DollarSign,
-    flavor: '$ 92,400.00 ROUTED THROUGH AC-4471',
-  },
-  {
-    name: 'NOCTURNE SYSTEMS',
-    label: 'ENTITY 03 — ENCRYPTED CHANNEL',
-    accent: COLORS.cipher,
-    icon: Lock,
-    flavor: '9-BLOCK CIPHER · KEY FRAGMENT RECOVERED',
-  },
-];
-
-/**
- * A length-normalized SVG "string" connecting three pins, like a corkboard
- * thread linking evidence. pathLength="1" means stroke-dasharray/dashoffset
- * of 1/0 always maps to fully-hidden/fully-drawn regardless of true path
- * length, so the draw-in works without measuring anything. Once drawn, a
- * small dot rides each segment on loop (SMIL animateMotion) as a signal
- * pulse, so the thread keeps reading as "live" instead of going inert.
- * Desktop only — on a single stacked column a horizontal thread has
- * nothing to connect.
- */
-function ConnectorThread({ inView, reducedMotion }) {
-  const pins = [
-    { x: 155, color: COLORS.amber },
-    { x: 490, color: COLORS.finance },
-    { x: 825, color: COLORS.cipher },
-  ];
-  const segs = [
-    [pins[0], pins[1], 0.3],
-    [pins[1], pins[2], 1.0],
-  ];
-
-  return (
-    <svg
-      viewBox="0 0 980 56"
-      preserveAspectRatio="none"
-      className="hidden md:block w-full"
-      style={{ maxWidth: 980, height: 44, overflow: 'visible', marginBottom: 4 }}
-    >
-      {segs.map(([a, b, segDelay], i) => {
-        const d = `M ${a.x} 38 Q ${(a.x + b.x) / 2} 6 ${b.x} 38`;
-        return (
-          <g key={i}>
-            <path
-              d={d}
-              fill="none"
-              stroke={COLORS.textFaint}
-              strokeWidth={1.4}
-              pathLength="1"
-              style={{
-                strokeDasharray: 1,
-                strokeDashoffset: inView ? 0 : 1,
-                transition: reducedMotion ? 'none' : `stroke-dashoffset 2.4s ${EASE_SMOOTH} ${segDelay}s`,
-              }}
-            />
-            {inView && !reducedMotion && (
-              <circle r="2.6" fill={COLORS.amber} opacity="0.85">
-                <animateMotion dur="3.6s" begin={`${segDelay + 2.5}s`} repeatCount="indefinite" path={d} />
-              </circle>
-            )}
-          </g>
-        );
-      })}
-      {pins.map((p, i) => (
-        <circle
-          key={p.x}
-          cx={p.x}
-          cy={inView ? 38 : 30}
-          r={5}
-          fill={p.color}
-          style={{
-            opacity: inView ? 1 : 0,
-            transition: reducedMotion
-              ? 'none'
-              : `opacity 1.1s ${EASE_SMOOTH} ${i * 0.35 + 0.9}s, cy 1.1s ${EASE_SMOOTH} ${i * 0.35 + 0.9}s`,
-          }}
-        />
-      ))}
-    </svg>
-  );
-}
-
-function SponsorCard({ sponsor, inView, delay, reducedMotion, tilt }) {
-  const Icon = sponsor.icon;
-  const nameDelay = delay + 520;
-  const redactDelay = delay + 80;
-
-  return (
-    <div
-      className="relative flex flex-col items-center text-center gap-4 px-6 py-9 rounded-sm overflow-hidden"
-      style={{
-        background: COLORS.panel,
-        border: `1px solid ${sponsor.accent}55`,
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0px) rotate(0deg) scale(1)' : `translateY(34px) rotate(${tilt}deg) scale(0.97)`,
-        transition: `opacity 1.9s ${EASE_SMOOTH} ${delay}ms, transform 1.9s ${EASE_SMOOTH} ${delay}ms`,
-      }}
-    >
-      {/* Pin, as if this card were tacked to a corkboard */}
-      <span
-        aria-hidden="true"
-        className="absolute rounded-full"
-        style={{
-          top: -6,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 10,
-          height: 10,
-          background: sponsor.accent,
-          boxShadow: `0 0 7px 1px ${sponsor.accent}AA`,
-          opacity: inView ? 1 : 0,
-          transition: `opacity 0.6s ease ${delay + 700}ms`,
-        }}
-      />
-
-      {/* Redaction wipe: an ink bar covers the card, then peels back from
-          the left, revealing it like a declassified document. */}
-      {!reducedMotion && (
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-20 pointer-events-none"
-          style={{
-            background: '#060606',
-            transformOrigin: 'right center',
-            transform: inView ? 'scaleX(0)' : 'scaleX(1)',
-            transition: `transform 0.95s cubic-bezier(0.65, 0, 0.35, 1) ${redactDelay}ms`,
-          }}
-        />
-      )}
-
-      {!reducedMotion && (
-        <div
-          className="ix-cardglow-layer"
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            inset: -1,
-            borderRadius: 2,
-            boxShadow: `0 0 26px 2px ${sponsor.accent}66`,
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-
-      <div
-        className={reducedMotion ? 'relative' : 'relative ix-flicker'}
-        style={{ color: sponsor.accent, display: 'flex', alignItems: 'center', gap: 8 }}
-      >
-        <Icon size={16} />
-        <span style={{ fontFamily: FONT_MONO, fontSize: 10, letterSpacing: '0.25em' }}>{sponsor.label}</span>
-      </div>
-
-      <div
-        className="relative"
-        style={{
-          fontFamily: FONT_DISPLAY,
-          fontSize: 'clamp(1.8rem, 4vw, 2.6rem)',
-          color: COLORS.text,
-          lineHeight: 1,
-          letterSpacing: inView ? '0.03em' : '0.4em',
-          filter: inView ? 'blur(0px)' : 'blur(5px)',
-          opacity: inView ? 1 : 0,
-          transition: reducedMotion
-            ? 'none'
-            : `letter-spacing 1.4s ${EASE_SMOOTH} ${nameDelay}ms, filter 1.4s ${EASE_SMOOTH} ${nameDelay}ms, opacity 1.2s ${EASE_SMOOTH} ${nameDelay}ms`,
-        }}
-      >
-        {sponsor.name}
-      </div>
-
-      <div className="relative" style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.03em', color: COLORS.textMuted }}>
-        {sponsor.flavor}
-      </div>
-
-      <span
-        className={reducedMotion ? 'relative' : 'relative ix-shimmer'}
-        style={{
-          display: 'block',
-          width: 28,
-          height: 2,
-          marginTop: 2,
-          background: `linear-gradient(90deg, ${sponsor.accent}, #ffffffaa, ${sponsor.accent})`,
-          backgroundSize: '200% 100%',
-          transform: inView ? 'scaleX(1)' : 'scaleX(0)',
-          transformOrigin: 'left center',
-          transition: `transform 1.3s ${EASE_SMOOTH} ${delay + 780}ms`,
-        }}
-      />
-    </div>
-  );
-}
-
 function SponsorsReveal({ inView, reducedMotion }) {
-  // Deterministic small tilts so each card pins in at a slightly different
-  // angle, without relying on Math.random() during render.
-  const tilts = useMemo(() => {
-    const rand = mulberry32(41);
-    return SPONSORS.map(() => (rand() - 0.5) * 6.5);
-  }, []);
-
   return (
     <section
       className="relative w-full flex flex-col items-center justify-center px-6 py-24 overflow-hidden"
@@ -509,25 +275,60 @@ function SponsorsReveal({ inView, reducedMotion }) {
       <div className="relative flex items-center gap-2 mb-10" style={{ color: COLORS.amber }}>
         <Radar size={13} />
         <span style={{ fontFamily: FONT_MONO, fontSize: 11, letterSpacing: '0.3em' }}>
-          STAGE 01 — ENTITIES IDENTIFIED
+          STAGE 01 — ENTITIES PENDING
         </span>
       </div>
 
-      <div className="relative w-full flex flex-col items-center" style={{ maxWidth: 980 }}>
-        <ConnectorThread inView={inView} reducedMotion={reducedMotion} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-          {SPONSORS.map((s, i) => (
-            <SponsorCard
-              key={s.name}
-              sponsor={s}
-              inView={inView}
-              delay={i * 320}
-              reducedMotion={reducedMotion}
-              tilt={tilts[i]}
-            />
-          ))}
+      {/* The partner roster is not public yet; this placard stands in for it. */}
+      <RevealLine inView={inView} delay={0}>
+        <div
+          className="relative flex flex-col items-center text-center px-8 py-14 sm:px-16"
+          style={{
+            background: COLORS.panel,
+            border: `1px dashed ${COLORS.amber}66`,
+            maxWidth: 720,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: FONT_MONO,
+              fontSize: 10,
+              letterSpacing: '0.35em',
+              color: COLORS.textMuted,
+            }}
+          >
+            PARTNER DOSSIER — SEALED
+          </span>
+
+          <h2
+            className="text-4xl sm:text-5xl md:text-6xl"
+            style={{
+              fontFamily: FONT_DISPLAY,
+              color: COLORS.text,
+              letterSpacing: '0.06em',
+              lineHeight: 1,
+              margin: '18px 0 0',
+            }}
+          >
+            COMING <span style={{ color: COLORS.amber }}>SOON</span>
+          </h2>
+
+          <p
+            className="mt-5"
+            style={{
+              fontFamily: FONT_BODY,
+              fontSize: 15,
+              lineHeight: 1.7,
+              color: COLORS.textMuted,
+              maxWidth: 460,
+              margin: '20px 0 0',
+            }}
+          >
+            The organisations backing INTEL-X 2026 will be named here once the
+            paperwork clears.
+          </p>
         </div>
-      </div>
+      </RevealLine>
     </section>
   );
 }
@@ -574,15 +375,9 @@ function FinalState({ inView }) {
   return (
     <section className="relative w-full flex flex-col items-center justify-center px-6 py-20" style={{ background: COLORS.bg }}>
       <div className="flex flex-col items-center text-center gap-6" style={{ maxWidth: 560 }}>
-        <RevealLine inView={inView} delay={0} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Tag color={COLORS.amber} name="MERIDIAN FREIGHT" />
-          <Tag color={COLORS.finance} name="VANTAGE HOLDINGS" />
-          <Tag color={COLORS.cipher} name="NOCTURNE SYSTEMS" />
-        </RevealLine>
-
         <RevealLine inView={inView} delay={160}>
           <span style={{ fontFamily: FONT_MONO, fontSize: 12, letterSpacing: '0.3em', color: COLORS.textMuted }}>
-            03 ENTITIES IDENTIFIED
+            ENTITIES TO BE ANNOUNCED
           </span>
         </RevealLine>
 
@@ -591,7 +386,7 @@ function FinalState({ inView }) {
         </div>
 
         <RevealLine inView={inView} delay={520}>
-          <p style={{ fontFamily: FONT_BODY, fontSize: 18, color: COLORS.text, margin: 0 }}>YOU FOUND THE PARTNERS.</p>
+          <p style={{ fontFamily: FONT_BODY, fontSize: 18, color: COLORS.text, margin: 0 }}>THE PARTNERS ARE STILL UNDER WRAPS.</p>
         </RevealLine>
 
         <RevealLine inView={inView} delay={700}>
@@ -605,7 +400,7 @@ function FinalState({ inView }) {
               textShadow: `1px 0 ${COLORS.cipherAlt}55, -1px 0 ${COLORS.amber}55`,
             }}
           >
-            BUT YOU HAVEN'T FOUND THE TARGET.
+            THE INVESTIGATION IS ALREADY UNDER WAY.
           </p>
         </RevealLine>
 
