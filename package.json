@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@radix-ui/react-dialog": "^1.1.23",
+    "@supabase/supabase-js": "^2.112.4",
     "clsx": "^2.1.1",
     "lucide-react": "^0.575.0",
     "react": "^19.2.0",

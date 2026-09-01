@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import paperDoc from "@/assets/paper-doc.jpg";
+import { registerTeam } from "@/lib/supabase";
 import "./Register.css";
 
 /*
@@ -12,8 +13,8 @@ import "./Register.css";
  * The leader is member 01, so a team of N asks for N-1 additional operatives —
  * a solo entry asks for none.
  *
- * There is no backend wired up — submit validates, then shows the filed state.
- * Point `handleSubmit` at the real endpoint when there is one.
+ * Submitting calls the `register_team` Postgres function on Supabase, which
+ * writes the team and its members in one transaction.
  */
 
 const BLANK_MEMBER = { name: "", roll: "", email: "" };
@@ -128,7 +129,7 @@ export default function RegisterPage() {
     clearError(`member-${index}-${key}`);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const found = validate(form);
     setErrors(found);
@@ -144,10 +145,14 @@ export default function RegisterPage() {
     }
 
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setFiled(true);
-    }, 1100);
+    const { error } = await registerTeam(form);
+    setSubmitting(false);
+
+    if (error) {
+      setErrors({ form: error });
+      return;
+    }
+    setFiled(true);
   };
 
   const inputClass = (name) =>
@@ -328,6 +333,15 @@ export default function RegisterPage() {
                       ))}
                     </div>
                   </fieldset>
+                )}
+
+                {errors.form && (
+                  <p
+                    role="alert"
+                    className="mt-6 border border-red-900/40 bg-red-900/10 px-3 py-2 font-typewriter text-[10px] leading-5 text-red-800"
+                  >
+                    {errors.form}
+                  </p>
                 )}
 
                 <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">

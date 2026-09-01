@@ -65,7 +65,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section id="hero" className="intel-hero relative h-screen w-screen overflow-hidden bg-black">
+    <section id="hero" className="intel-hero relative min-h-screen w-screen overflow-hidden bg-black">
       <WorldMap offsetX={p.x * 26} offsetY={p.y * 16} />
       <Particles />
 
@@ -158,7 +158,7 @@ export function Hero() {
       <IntelligenceHUD offsetX={p.x * -6} offsetY={p.y * -4} />
 
       {/* content */}
-      <div className="relative z-20 mx-auto flex h-full max-w-[1600px] flex-col justify-start px-5 pb-24 pt-24 md:px-10 md:pt-28 pointer-events-none">
+      <div className="relative z-20 mx-auto flex min-h-screen max-w-[1600px] flex-col justify-start px-5 pb-24 pt-24 md:px-10 md:pt-28 pointer-events-none">
         <div className="max-w-2xl pointer-events-auto">
           <div className="animate-rise flex items-center gap-3">
             <span className="h-px w-8 bg-cyan" />
@@ -194,12 +194,12 @@ export function Hero() {
                 →
               </span>
             </Link>
-            <a
-              href="#event"
+            <Link
+              to="/events"
               className="hud inline-flex items-center justify-center border border-line px-8 py-4 transition-colors duration-300 hover:border-cyan/50 hover:!text-foreground"
             >
               Explore Event
-            </a>
+            </Link>
           </div>
         </div>
       </div>

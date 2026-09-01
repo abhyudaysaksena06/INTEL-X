@@ -14,6 +14,7 @@ import Events from "./pages/Events";
 import Sponsors from "./pages/Sponsors";
 import Contact from "./pages/Contact";
 import Register from "./pages/Register";
+import Admin from "./pages/Admin";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="/sponsors" element={<Sponsors />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

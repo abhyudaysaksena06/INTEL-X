@@ -10,6 +10,7 @@ import photo1 from "@/assets/photo1.jpg";
 import photo2 from "@/assets/photo2.jpg";
 import photo3 from "@/assets/photo3.jpg";
 import photo4 from "@/assets/photo4.jpg";
+import { sendContactMessage } from "@/lib/email";
 
 
 /* -------------------------------------------------------------------------- */
@@ -935,7 +936,7 @@ export default function ContactPage() {
     [activeFocusId],
   );
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errors: Record<string, string> = {};
     if (!formData.name.trim()) errors.name = "Callsign/Name required.";
@@ -950,10 +951,15 @@ export default function ContactPage() {
 
     setFormErrors({});
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setSent(true);
-    }, 1200);
+
+    const { error } = await sendContactMessage(formData);
+    setSubmitting(false);
+
+    if (error) {
+      setFormErrors({ form: error });
+      return;
+    }
+    setSent(true);
   };
 
   const handleResetForm = () => {
@@ -1459,6 +1465,14 @@ export default function ContactPage() {
                     </p>
                   )}
                 </div>
+                {formErrors.form && (
+                  <p
+                    role="alert"
+                    className="border border-red-900/40 bg-red-900/10 px-2.5 py-1.5 font-typewriter text-[9px] leading-4 text-red-800"
+                  >
+                    {formErrors.form}
+                  </p>
+                )}
                 <div className="flex justify-center pt-1">
                   <button
                     type="submit"
@@ -2129,6 +2143,14 @@ export default function ContactPage() {
                   )}
                 </div>
 
+                {formErrors.form && (
+                  <p
+                    role="alert"
+                    className="border border-red-900/40 bg-red-900/10 px-2.5 py-1.5 font-typewriter text-[9px] leading-4 text-red-800"
+                  >
+                    {formErrors.form}
+                  </p>
+                )}
                 <div className="flex justify-center pt-1">
                   <button
                     type="submit"

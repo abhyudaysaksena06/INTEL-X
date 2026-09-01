@@ -41,8 +41,8 @@ export function Navbar() {
                 to={item.to}
                 className={
                   active
-                    ? "border-b border-gold pb-1 text-gold"
-                    : "pb-1 text-[oklch(0.82_0.01_80)] transition-colors hover:text-gold"
+                    ? "border-b border-cyan pb-1 text-cyan"
+                    : "pb-1 text-[oklch(0.82_0.01_80)] transition-colors hover:text-soft-cyan"
                 }
               >
                 {item.label}
@@ -56,7 +56,7 @@ export function Navbar() {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
           aria-expanded={mobileMenuOpen}
-          className="flex h-9 w-9 items-center justify-center border border-[oklch(0.35_0.02_70)] bg-[oklch(0.15_0.01_60)] text-[oklch(0.85_0.02_85)] md:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-gold touch-manipulation"
+          className="flex h-9 w-9 items-center justify-center border border-[oklch(0.35_0.02_70)] bg-[oklch(0.15_0.01_60)] text-[oklch(0.85_0.02_85)] md:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan touch-manipulation"
         >
           <span className="font-typewriter text-sm font-bold">
             {mobileMenuOpen ? "✕" : "☰"}
@@ -76,8 +76,8 @@ export function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={
                     active
-                      ? "border-l-2 border-gold pl-2 text-gold font-bold"
-                      : "pl-2 text-[oklch(0.80_0.01_80)] transition-colors hover:text-gold"
+                      ? "border-l-2 border-cyan pl-2 text-cyan font-bold"
+                      : "pl-2 text-[oklch(0.80_0.01_80)] transition-colors hover:text-soft-cyan"
                   }
                 >
                   {item.label}

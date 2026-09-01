@@ -1,0 +1,49 @@
+/* Admin console — the home page's HUD palette, used as a terminal skin */
+
+.admin-page .admin-input {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid color-mix(in oklab, var(--cyan) 22%, transparent);
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.admin-page .admin-input::placeholder {
+  color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+}
+
+.admin-page .admin-input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 26px -8px var(--cyan);
+}
+
+.admin-page .admin-btn {
+  border: 1px solid var(--line);
+  padding: 0.6rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  transition: border-color 200ms ease, color 200ms ease, background-color 200ms ease;
+}
+
+.admin-page .admin-btn:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--cyan) 50%, transparent);
+  color: var(--foreground);
+}
+
+.admin-page .admin-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.admin-page .admin-row:hover {
+  background-color: color-mix(in oklab, var(--cyan) 6%, transparent);
+}

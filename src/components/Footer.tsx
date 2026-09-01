@@ -13,10 +13,10 @@ export function Footer() {
           </div>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 font-condensed text-[11px] tracking-[0.16em] text-[oklch(0.7_0.01_80)]">
-          <Link className="transition-colors hover:text-gold" to="/">HOME</Link>
-          <Link className="transition-colors hover:text-gold" to="/events">EVENTS</Link>
-          <Link className="transition-colors hover:text-gold" to="/sponsors">SPONSORS</Link>
-          <Link className="transition-colors hover:text-gold" to="/contact">CONTACT US</Link>
+          <Link className="transition-colors hover:text-soft-cyan" to="/">HOME</Link>
+          <Link className="transition-colors hover:text-soft-cyan" to="/events">EVENTS</Link>
+          <Link className="transition-colors hover:text-soft-cyan" to="/sponsors">SPONSORS</Link>
+          <Link className="transition-colors hover:text-soft-cyan" to="/contact">CONTACT US</Link>
         </nav>
       </div>
     </footer>
