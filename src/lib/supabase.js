@@ -106,12 +106,18 @@ export async function fetchRegistrations() {
 
   const { data, error } = await supabase
     .from("teams")
-    .select("id, team_name, leader_name, leader_roll, leader_email, team_size, created_at, team_members (member_no, name, roll, email)")
+    // the member ordinal column is `position` in the database; alias it so the
+    // rest of the app keeps the clearer name
+    .select(
+      "id, team_name, leader_name, leader_roll, leader_email, team_size, created_at, team_members (member_no:position, name, roll, email)",
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
+    // surface the real reason: a silent empty table hid a column-name mismatch
+    // (42703) for a whole debugging session
     console.error("[admin] ", error);
-    return { rows: [], error: "Could not load registrations." };
+    return { rows: [], error: `Could not load registrations — ${error.message}` };
   }
 
   const rows = (data ?? []).map((t) => ({
