@@ -5,21 +5,20 @@ import { Radar } from 'lucide-react';
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
+// The home page's palette, converted from its oklch tokens to hex — this file
+// composes colours with hex alpha suffixes (`${COLORS.cyan}14`), so it needs
+// literals rather than var() references.
 const COLORS = {
-  bg: '#0A0D12',
-  bgAlt: '#0D1119',
-  panel: '#141A23',
-  paper: '#EBE3CE',
-  paperDim: '#B7AD93',
-  ink: '#1B1712',
-  amber: '#CC8F45',
-  red: '#B8402E',
-  finance: '#3FA78A',
-  cipher: '#9088E8',
-  cipherAlt: '#4FC7C2',
-  text: '#EDEAE1',
-  textMuted: '#8C919B',
-  textFaint: '#4B505A',
+  bg: '#000000',        // --background
+  bgAlt: '#010305',     // --deep-black
+  panel: '#030A12',     // --surface
+  amber: '#69C6E0',     // --cyan  (the page's accent throughout)
+  cipher: '#275D6D',    // --blue
+  cipherAlt: '#9DE1F3', // --soft-cyan
+  red: '#DE3B3D',       // --destructive
+  text: '#F3F6F6',      // --foreground
+  textMuted: '#858E92', // --muted-foreground
+  textFaint: '#454F53',
 };
 
 const FONT_DISPLAY = "'Bebas Neue', sans-serif";
