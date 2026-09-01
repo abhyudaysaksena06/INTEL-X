@@ -47,3 +47,22 @@
 .admin-page .admin-row:hover {
   background-color: color-mix(in oklab, var(--cyan) 6%, transparent);
 }
+
+.admin-page .admin-btn-go {
+  border-color: color-mix(in oklab, var(--cyan) 60%, transparent);
+  color: var(--soft-cyan);
+}
+
+.admin-page .admin-btn-go:hover:not(:disabled) {
+  background-color: color-mix(in oklab, var(--cyan) 12%, transparent);
+}
+
+.admin-page .admin-btn-danger {
+  border-color: color-mix(in oklab, var(--destructive) 55%, transparent);
+  color: color-mix(in oklab, var(--destructive) 85%, white);
+}
+
+.admin-page .admin-btn-danger:hover:not(:disabled) {
+  background-color: color-mix(in oklab, var(--destructive) 15%, transparent);
+  color: var(--foreground);
+}

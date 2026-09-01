@@ -109,7 +109,7 @@ export async function fetchRegistrations() {
     // the member ordinal column is `position` in the database; alias it so the
     // rest of the app keeps the clearer name
     .select(
-      "id, team_name, leader_name, leader_roll, leader_email, team_size, created_at, team_members (member_no:position, name, roll, email)",
+      "id, team_name, leader_name, leader_roll, leader_email, team_size, created_at, team_members (id, member_no:position, name, roll, email)",
     )
     .order("created_at", { ascending: false });
 
@@ -146,4 +146,58 @@ export function toCsv(rows) {
   }
 
   return lines.join("\n");
+}
+
+/* ----------------------------- admin editing ---------------------------- */
+/*
+ * Writes go straight through PostgREST rather than an RPC: RLS restricts these
+ * tables to admins for update/delete, so the database is still the gatekeeper.
+ * Every helper returns { error } with the database's own message when it fails.
+ */
+
+const failed = (where, error) => {
+  console.error(`[admin] ${where} `, error);
+  const detail = `${error.message} ${error.details ?? ""}`;
+  if (detail.includes("teams_name_key")) return { error: "Another team already has that name." };
+  if (detail.includes("teams_roll_key")) return { error: "Another team already has that leader roll number." };
+  if (detail.includes("_roll_check")) return { error: "Roll numbers must be 4-20 letters, digits, / or -." };
+  if (detail.includes("_email_check")) return { error: "That email address is not valid." };
+  if (detail.includes("team_size_check")) return { error: "A team must have between 1 and 4 members." };
+  return { error: error.message };
+};
+
+/** Saves the team's own fields. `team_size` is kept as 1 (the leader) + members. */
+export async function updateTeam(id, fields) {
+  if (!supabase) return { error: "Not connected." };
+  const { error } = await supabase.from("teams").update(fields).eq("id", id);
+  return error ? failed("updateTeam", error) : { error: null };
+}
+
+/** Saves one member row. */
+export async function updateMember(id, fields) {
+  if (!supabase) return { error: "Not connected." };
+  const { error } = await supabase.from("team_members").update(fields).eq("id", id);
+  return error ? failed("updateMember", error) : { error: null };
+}
+
+/** Adds a member at the next free slot (2-4). */
+export async function addMember(teamId, position, fields) {
+  if (!supabase) return { error: "Not connected." };
+  const { error } = await supabase
+    .from("team_members")
+    .insert({ team_id: teamId, position, ...fields });
+  return error ? failed("addMember", error) : { error: null };
+}
+
+export async function deleteMember(id) {
+  if (!supabase) return { error: "Not connected." };
+  const { error } = await supabase.from("team_members").delete().eq("id", id);
+  return error ? failed("deleteMember", error) : { error: null };
+}
+
+/** Removes a team; its members go with it via the foreign key cascade. */
+export async function deleteTeam(id) {
+  if (!supabase) return { error: "Not connected." };
+  const { error } = await supabase.from("teams").delete().eq("id", id);
+  return error ? failed("deleteTeam", error) : { error: null };
 }

@@ -7,6 +7,11 @@ import {
   isAdmin,
   fetchRegistrations,
   toCsv,
+  updateTeam,
+  updateMember,
+  addMember,
+  deleteMember,
+  deleteTeam,
 } from "@/lib/supabase";
 import "./Admin.css";
 
@@ -97,8 +102,120 @@ function Login({ onDone }) {
   );
 }
 
-function Row({ team }) {
+const BLANK = { name: "", roll: "", email: "" };
+
+/** One expandable row: read-only until Edit, then an inline form. */
+function Row({ team, onChanged }) {
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  const [draft, setDraft] = useState(null);
+
+  const startEdit = (e) => {
+    e.stopPropagation();
+    setDraft({
+      team_name: team.team_name,
+      leader_name: team.leader_name,
+      leader_roll: team.leader_roll,
+      leader_email: team.leader_email,
+      members: team.team_members.map((m) => ({ ...m })),
+      removed: [],
+    });
+    setError(null);
+    setOpen(true);
+    setEditing(true);
+  };
+
+  const setField = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
+
+  const setMemberField = (i, k, v) =>
+    setDraft((d) => ({
+      ...d,
+      members: d.members.map((m, idx) => (idx === i ? { ...m, [k]: v } : m)),
+    }));
+
+  const dropMember = (i) =>
+    setDraft((d) => {
+      const m = d.members[i];
+      return {
+        ...d,
+        members: d.members.filter((_, idx) => idx !== i),
+        removed: m.id ? [...d.removed, m.id] : d.removed,
+      };
+    });
+
+  const appendMember = () =>
+    setDraft((d) =>
+      d.members.length >= 3 ? d : { ...d, members: [...d.members, { ...BLANK }] },
+    );
+
+  const save = async () => {
+    setBusy(true);
+    setError(null);
+
+    // members occupy slots 2..4; the leader is always 01
+    const size = 1 + draft.members.length;
+
+    for (const id of draft.removed) {
+      const { error: err } = await deleteMember(id);
+      if (err) {
+        setError(err);
+        setBusy(false);
+        return;
+      }
+    }
+
+    let slot = 2;
+    for (const m of draft.members) {
+      const fields = {
+        name: m.name.trim(),
+        roll: m.roll.trim(),
+        email: m.email.trim().toLowerCase(),
+      };
+      const { error: err } = m.id
+        ? await updateMember(m.id, { ...fields, position: slot })
+        : await addMember(team.id, slot, fields);
+      if (err) {
+        setError(err);
+        setBusy(false);
+        return;
+      }
+      slot += 1;
+    }
+
+    const { error: err } = await updateTeam(team.id, {
+      team_name: draft.team_name.trim(),
+      leader_name: draft.leader_name.trim(),
+      leader_roll: draft.leader_roll.trim(),
+      leader_email: draft.leader_email.trim().toLowerCase(),
+      team_size: size,
+    });
+    if (err) {
+      setError(err);
+      setBusy(false);
+      return;
+    }
+
+    setBusy(false);
+    setEditing(false);
+    onChanged();
+  };
+
+  const remove = async () => {
+    const ok = window.confirm(
+      "Delete team " + team.team_name + " and all its members? This cannot be undone.",
+    );
+    if (!ok) return;
+    setBusy(true);
+    const { error: err } = await deleteTeam(team.id);
+    setBusy(false);
+    if (err) {
+      setError(err);
+      return;
+    }
+    onChanged();
+  };
 
   return (
     <>
@@ -120,24 +237,137 @@ function Row({ team }) {
         <td className="hidden px-3 py-3 font-mono text-xs text-muted-foreground md:table-cell">
           {new Date(team.created_at).toLocaleString()}
         </td>
-        <td className="px-3 py-3 text-right text-cyan/70">{open ? "−" : "+"}</td>
+        <td className="whitespace-nowrap px-3 py-3 text-right">
+          <button type="button" onClick={startEdit} className="admin-btn !px-3 !py-1.5">
+            Edit
+          </button>
+          <span className="ml-3 text-cyan/70">{open ? "-" : "+"}</span>
+        </td>
       </tr>
 
-      {open && team.team_members.length > 0 && (
+      {open && (
         <tr className="border-b border-line/25 bg-black/40">
-          <td colSpan={7} className="px-3 py-3">
-            <ul className="space-y-1.5">
-              {team.team_members.map((m) => (
-                <li key={m.member_no} className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
-                  <span className="hud text-cyan/60">
-                    Member {String(m.member_no).padStart(2, "0")}
-                  </span>
-                  <span className="text-foreground">{m.name}</span>
-                  <span className="font-mono text-muted-foreground">{m.roll}</span>
-                  <span className="font-mono text-muted-foreground">{m.email}</span>
-                </li>
-              ))}
-            </ul>
+          <td colSpan={7} className="px-3 py-4">
+            {!editing ? (
+              team.team_members.length ? (
+                <ul className="space-y-1.5">
+                  {team.team_members.map((m) => (
+                    <li
+                      key={m.id ?? m.member_no}
+                      className="flex flex-wrap gap-x-6 gap-y-1 text-xs"
+                    >
+                      <span className="hud text-cyan/60">
+                        Member {String(m.member_no).padStart(2, "0")}
+                      </span>
+                      <span className="text-foreground">{m.name}</span>
+                      <span className="font-mono text-muted-foreground">{m.roll}</span>
+                      <span className="font-mono text-muted-foreground">{m.email}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-muted-foreground">Solo entry — leader only.</p>
+              )
+            ) : (
+              <div className="space-y-5">
+                <div>
+                  <p className="hud mb-2 text-cyan/70">Team and leader</p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {[
+                      ["team_name", "Team name"],
+                      ["leader_name", "Leader name"],
+                      ["leader_roll", "Leader roll"],
+                      ["leader_email", "Leader email"],
+                    ].map(([k, label]) => (
+                      <label key={k} className="block">
+                        <span className="hud !text-[9px] text-muted-foreground">{label}</span>
+                        <input
+                          value={draft[k]}
+                          onChange={(e) => setField(k, e.target.value)}
+                          className="admin-input !mt-1 !py-2 !text-xs"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="hud mb-2 text-cyan/70">
+                    Other operatives ({draft.members.length})
+                  </p>
+                  <div className="space-y-3">
+                    {draft.members.map((m, i) => (
+                      <div
+                        key={m.id ?? "new-" + i}
+                        className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
+                      >
+                        {["name", "roll", "email"].map((k) => (
+                          <input
+                            key={k}
+                            value={m[k]}
+                            placeholder={k}
+                            onChange={(e) => setMemberField(i, k, e.target.value)}
+                            className="admin-input !mt-0 !py-2 !text-xs"
+                          />
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => dropMember(i)}
+                          className="admin-btn !px-3 !py-2"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                    {draft.members.length < 3 && (
+                      <button
+                        type="button"
+                        onClick={appendMember}
+                        className="admin-btn !px-3 !py-2"
+                      >
+                        Add member
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {error && (
+                  <p role="alert" className="hud !text-[10px] text-destructive">
+                    {error}
+                  </p>
+                )}
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={save}
+                    disabled={busy}
+                    className="admin-btn admin-btn-go"
+                  >
+                    {busy ? "Saving..." : "Save changes"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditing(false);
+                      setError(null);
+                    }}
+                    disabled={busy}
+                    className="admin-btn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={remove}
+                    disabled={busy}
+                    className="admin-btn admin-btn-danger"
+                  >
+                    Delete team
+                  </button>
+                </div>
+              </div>
+            )}
           </td>
         </tr>
       )}
@@ -241,7 +471,7 @@ function Console({ onSignOut }) {
           <table className="w-full min-w-[820px] text-left text-sm">
             <thead>
               <tr className="border-b border-line/40 bg-surface/40">
-                {["Team", "Leader", "Roll", "Email", "Size", "Registered", ""].map((h, i) => (
+                {["Team", "Leader", "Roll", "Email", "Size", "Registered", "Actions"].map((h, i) => (
                   <th
                     key={h || i}
                     className={`hud px-3 py-3 text-cyan/70 ${i === 5 ? "hidden md:table-cell" : ""}`}
@@ -253,7 +483,7 @@ function Console({ onSignOut }) {
             </thead>
             <tbody>
               {visible.map((t) => (
-                <Row key={t.id} team={t} />
+                <Row key={t.id} team={t} onChanged={load} />
               ))}
             </tbody>
           </table>
