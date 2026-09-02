@@ -1019,9 +1019,9 @@ export default function ContactPage() {
             {/* 1. Base physical thread */}
             <g
               stroke="oklch(0.38 0.14 26)"
-              strokeWidth="1.2"
+              strokeWidth="1.1"
               fill="none"
-              opacity="0.82"
+              opacity="0.55"
               strokeLinecap="round"
             >
               {THREAD_SEGMENTS.map((seg, i) => (
@@ -1550,17 +1550,19 @@ export default function ContactPage() {
             if (activeEvidenceId) setActiveEvidenceId(null);
           }}
         >
-          {/* DYNAMIC RESPONSIVE SVG INVESTIGATION THREADS FOR MOBILE */}
+          {/* DYNAMIC RESPONSIVE SVG INVESTIGATION THREADS FOR MOBILE.
+              Sits behind the evidence: on a narrow board the paths run steeply
+              across the photos, and over the top they cut through the captions. */}
           <svg
-            className="pointer-events-none absolute inset-0 z-20 h-full w-full"
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full"
             aria-hidden="true"
           >
             {/* 1. Base physical thread */}
             <g
               stroke="oklch(0.38 0.14 26)"
-              strokeWidth="1.2"
+              strokeWidth="1.1"
               fill="none"
-              opacity="0.82"
+              opacity="0.55"
               strokeLinecap="round"
             >
               {mobileThreadPaths.map((d, i) => {
