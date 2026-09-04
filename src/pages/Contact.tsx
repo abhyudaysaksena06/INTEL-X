@@ -352,18 +352,29 @@ interface MobileThreadDef {
 }
 
 const MOBILE_THREAD_DEFS: MobileThreadDef[] = [
-  // 0. contact-note -> photo-terminal
+  // 0. contact-note -> main-doc
   {
     from: "pin-mob-contact",
+    to: "pin-mob-doc",
+    duration: 10.4,
+    delay: -1.8,
+    pulseDuration: 4.8,
+    pulseDelay: -0.9,
+    curveDirection: 1,
+    evidenceIds: ["contact-note", "main-doc"],
+  },
+  // 1. main-doc -> photo-terminal
+  {
+    from: "pin-mob-doc",
     to: "pin-mob-terminal",
     duration: 11.8,
     delay: -2.4,
     pulseDuration: 5.2,
     pulseDelay: -1.1,
     curveDirection: -1,
-    evidenceIds: ["contact-note", "photo-terminal"],
+    evidenceIds: ["main-doc", "photo-terminal"],
   },
-  // 1. photo-terminal -> photo-cargo
+  // 2. photo-terminal -> photo-cargo
   {
     from: "pin-mob-terminal",
     to: "pin-mob-cargo",
@@ -374,93 +385,82 @@ const MOBILE_THREAD_DEFS: MobileThreadDef[] = [
     curveDirection: 1,
     evidenceIds: ["photo-terminal", "photo-cargo"],
   },
-  // 2. photo-cargo -> main-doc
+  // 3. photo-terminal -> photo-airliner
   {
-    from: "pin-mob-cargo",
-    to: "pin-mob-doc",
-    duration: 13.5,
+    from: "pin-mob-terminal",
+    to: "pin-mob-airliner",
+    duration: 12.6,
     delay: -4.3,
-    pulseDuration: 6.0,
-    pulseDelay: -4.8,
-    curveDirection: 1,
-    evidenceIds: ["photo-cargo", "main-doc"],
+    pulseDuration: 5.6,
+    pulseDelay: -2.1,
+    curveDirection: -1,
+    evidenceIds: ["photo-terminal", "photo-airliner"],
   },
-  // 3. photo-cargo -> case-file
+  // 4. photo-cargo -> photo-airfield
   {
     from: "pin-mob-cargo",
-    to: "pin-mob-casefile",
+    to: "pin-mob-airfield",
     duration: 11.0,
     delay: -8.2,
     pulseDuration: 4.9,
     pulseDelay: -2.3,
     curveDirection: 1,
-    evidenceIds: ["photo-cargo", "case-file"],
+    evidenceIds: ["photo-cargo", "photo-airfield"],
   },
-  // 4. photo-cargo -> photo-airliner
+  // 5. photo-airliner -> photo-airfield
   {
-    from: "pin-mob-cargo",
-    to: "pin-mob-airliner",
-    duration: 14.2,
-    delay: -3.9,
-    pulseDuration: 6.5,
-    pulseDelay: -5.5,
-    curveDirection: 1,
-    evidenceIds: ["photo-cargo", "photo-airliner"],
-  },
-  // 5. photo-cargo -> photo-hangar
-  {
-    from: "pin-mob-cargo",
-    to: "pin-mob-hangar",
+    from: "pin-mob-airliner",
+    to: "pin-mob-airfield",
     duration: 9.2,
     delay: -0.8,
     pulseDuration: 4.2,
     pulseDelay: -0.4,
-    curveDirection: -1,
-    evidenceIds: ["photo-cargo", "photo-hangar"],
-  },
-  // 6. photo-hangar -> photo-airliner
-  {
-    from: "pin-mob-hangar",
-    to: "pin-mob-airliner",
-    duration: 15.0,
-    delay: -9.5,
-    pulseDuration: 6.8,
-    pulseDelay: -4.1,
     curveDirection: 1,
-    evidenceIds: ["photo-hangar", "photo-airliner"],
+    evidenceIds: ["photo-airliner", "photo-airfield"],
   },
-  // 7. photo-hangar -> case-file
+  // 6. photo-cargo -> case-file
   {
-    from: "pin-mob-hangar",
+    from: "pin-mob-cargo",
     to: "pin-mob-casefile",
-    duration: 10.4,
-    delay: -3.1,
-    pulseDuration: 4.7,
-    pulseDelay: -2.6,
-    curveDirection: 1,
-    evidenceIds: ["photo-hangar", "case-file"],
-  },
-  // 8. photo-hangar -> photo-airfield
-  {
-    from: "pin-mob-hangar",
-    to: "pin-mob-airfield",
-    duration: 12.6,
-    delay: -5.7,
-    pulseDuration: 5.6,
-    pulseDelay: -4.5,
+    duration: 14.2,
+    delay: -3.9,
+    pulseDuration: 6.5,
+    pulseDelay: -5.5,
     curveDirection: -1,
-    evidenceIds: ["photo-hangar", "photo-airfield"],
+    evidenceIds: ["photo-cargo", "case-file"],
   },
-  // 9. photo-airfield -> coord-note
+  // 7. photo-airfield -> case-file
   {
     from: "pin-mob-airfield",
+    to: "pin-mob-casefile",
+    duration: 10.8,
+    delay: -5.4,
+    pulseDuration: 4.6,
+    pulseDelay: -1.7,
+    curveDirection: 1,
+    evidenceIds: ["photo-airfield", "case-file"],
+  },
+  // 8. case-file -> coord-note
+  {
+    from: "pin-mob-casefile",
     to: "pin-mob-coord",
     duration: 11.4,
-    delay: -2.8,
-    pulseDuration: 5.1,
-    pulseDelay: -1.5,
+    delay: -7.1,
+    pulseDuration: 5.0,
+    pulseDelay: -2.8,
+    curveDirection: -1,
+    evidenceIds: ["case-file", "coord-note"],
+  },
+  // 9. coord-note -> map-evidence
+  {
+    from: "pin-mob-coord",
+    to: "pin-mob-map",
+    duration: 9.8,
+    delay: -2.6,
+    pulseDuration: 4.3,
+    pulseDelay: -1.4,
     curveDirection: 1,
-    evidenceIds: ["photo-airfield", "coord-note"],
+    evidenceIds: ["coord-note", "map-evidence"],
   },
 ];
 
@@ -1019,9 +1019,9 @@ export default function ContactPage() {
             {/* 1. Base physical thread */}
             <g
               stroke="oklch(0.38 0.14 26)"
-              strokeWidth="1.1"
+              strokeWidth="1.2"
               fill="none"
-              opacity="0.55"
+              opacity="0.7"
               strokeLinecap="round"
             >
               {THREAD_SEGMENTS.map((seg, i) => (
@@ -1560,9 +1560,9 @@ export default function ContactPage() {
             {/* 1. Base physical thread */}
             <g
               stroke="oklch(0.38 0.14 26)"
-              strokeWidth="1.1"
+              strokeWidth="1.2"
               fill="none"
-              opacity="0.55"
+              opacity="0.7"
               strokeLinecap="round"
             >
               {mobileThreadPaths.map((d, i) => {
