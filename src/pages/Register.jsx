@@ -361,7 +361,7 @@ export default function RegisterPage() {
                   </button>
 
                   <p className="font-typewriter text-[9px] tracking-[0.14em] text-ink/60">
-                    ENTRIES CLOSE 05 / 17:00
+                    ENTRIES CLOSE 05 / 15:00
                   </p>
                 </div>
               </form>

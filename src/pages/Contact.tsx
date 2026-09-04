@@ -1729,6 +1729,179 @@ export default function ContactPage() {
           </div>
 
           {/* -------------------------------------------------------------- */}
+          {/* MAIN DISPATCH DOCUMENT (CONTACT FORM ON MOBILE)               */}
+          {/* -------------------------------------------------------------- */}
+          <section
+            className="evidence-interactive paper-shadow relative mx-auto mt-6 w-full max-w-sm rotate-[-0.6deg] p-4 sm:p-6 text-ink"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span
+              className="paper-aged pointer-events-none absolute inset-0 -z-10"
+              style={{
+                backgroundImage: `url(${paperDoc})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <Pin
+              dataPinNode="pin-mob-doc"
+              className="left-[6%] top-[-8px]"
+              label="Top Left Form Pin"
+            />
+            <Pin className="right-[6%] top-[-8px]" label="Top Right Form Pin" />
+
+            <h2 className="font-typewriter text-base sm:text-lg tracking-wide text-ink">
+              SEND US A MESSAGE
+            </h2>
+
+            {sent ? (
+              <div className="mt-3 border border-ink/30 bg-ink/5 p-3.5 font-typewriter text-ink">
+                <div className="flex items-center gap-2 text-xs font-bold text-[oklch(0.42_0.16_27)]">
+                  <span>✔</span>
+                  <span>TRANSMISSION DISPATCHED</span>
+                </div>
+                <p className="mt-2 text-[11px] leading-5 text-ink/85">
+                  Your lead has been encrypted and logged under reference <strong>#IX-8492</strong>.
+                  Our task force is cross-referencing your report.
+                </p>
+                <div className="mt-3 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={handleResetForm}
+                    className="border border-ink/40 bg-[oklch(0.22_0.01_60)] px-5 py-1.5 font-typewriter text-[10px] tracking-widest text-[oklch(0.92_0.02_85)] hover:bg-[oklch(0.28_0.01_60)]"
+                  >
+                    SEND ANOTHER REPORT
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={onSubmit} className="mt-3.5 space-y-2.5">
+                {(["name", "email", "subject"] as const).map((field) => {
+                  const label = field.toUpperCase();
+                  const err = formErrors[field];
+                  return (
+                    <div key={field}>
+                      <input
+                        type={field === "email" ? "email" : "text"}
+                        aria-label={label}
+                        placeholder={label}
+                        value={formData[field]}
+                        onChange={(e) => {
+                          setFormData({ ...formData, [field]: e.target.value });
+                          if (formErrors[field]) {
+                            const updated = { ...formErrors };
+                            delete updated[field];
+                            setFormErrors(updated);
+                          }
+                        }}
+                        className={`paper-field w-full px-3 py-2 font-typewriter text-[11px] tracking-wide transition-all ${
+                          err ? "border-red-600 bg-red-950/10" : ""
+                        }`}
+                      />
+                      {err && (
+                        <p className="mt-0.5 font-typewriter text-[8px] sm:text-[9px] text-red-800">
+                          {err}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+                <div>
+                  <textarea
+                    rows={3}
+                    aria-label="MESSAGE"
+                    placeholder="MESSAGE"
+                    value={formData.message}
+                    onChange={(e) => {
+                      setFormData({ ...formData, message: e.target.value });
+                      if (formErrors.message) {
+                        const updated = { ...formErrors };
+                        delete updated.message;
+                        setFormErrors(updated);
+                      }
+                    }}
+                    className={`paper-field w-full resize-none px-3 py-2 font-typewriter text-[11px] tracking-wide transition-all ${
+                      formErrors.message ? "border-red-600 bg-red-950/10" : ""
+                    }`}
+                  />
+                  {formErrors.message && (
+                    <p className="mt-0.5 font-typewriter text-[8px] sm:text-[9px] text-red-800">
+                      {formErrors.message}
+                    </p>
+                  )}
+                </div>
+
+                {formErrors.form && (
+                  <p
+                    role="alert"
+                    className="border border-red-900/40 bg-red-900/10 px-2.5 py-1.5 font-typewriter text-[9px] leading-4 text-red-800"
+                  >
+                    {formErrors.form}
+                  </p>
+                )}
+                <div className="flex justify-center pt-1">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex items-center justify-center gap-2 bg-[oklch(0.22_0.01_60)] w-full py-2.5 font-typewriter text-[11px] tracking-[0.18em] text-[oklch(0.92_0.02_85)] shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all hover:bg-[oklch(0.28_0.01_60)] active:scale-[0.98] disabled:opacity-60 cursor-pointer touch-manipulation"
+                  >
+                    {submitting ? (
+                      <>
+                        <span className="inline-block h-2 w-2 rounded-full bg-gold animate-ping" />
+                        <span>ENCRYPTING...</span>
+                      </>
+                    ) : (
+                      "SUBMIT"
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            <h3 className="mt-5 border-b border-ink/30 pb-1 font-typewriter text-sm tracking-wide text-ink">
+              REACH US AT
+            </h3>
+            <ul className="mt-2.5 space-y-1.5 font-typewriter text-[11px] leading-5 text-ink/90">
+              <li className="flex items-start gap-2.5">
+                <MailIcon />
+                <a href="mailto:lead_sc@thapar.edu" className="hover:underline">
+                  lead_sc@thapar.edu
+                </a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <InstagramIcon />
+                <a
+                  href="https://www.instagram.com/lead_tiet/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  @lead_tiet
+                </a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <GithubIcon />
+                <a
+                  href="https://github.com/LEAD-Society-Thapar/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  LEAD-Society-Thapar
+                </a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <PinIcon />
+                <span>
+                  Thapar Institute of Engineering,
+                  <br />
+                  Patiala
+                </span>
+              </li>
+            </ul>
+          </section>
+
+          {/* -------------------------------------------------------------- */}
           {/* MOBILE CLUSTER 1: SURVEILLANCE EVIDENCE (Row 1)               */}
           {/* -------------------------------------------------------------- */}
           <div className="relative mb-5">
@@ -2007,178 +2180,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* -------------------------------------------------------------- */}
-          {/* MAIN DISPATCH DOCUMENT (CONTACT FORM ON MOBILE)               */}
-          {/* -------------------------------------------------------------- */}
-          <section
-            className="evidence-interactive paper-shadow relative mx-auto mt-6 w-full max-w-sm rotate-[-0.6deg] p-4 sm:p-6 text-ink"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span
-              className="paper-aged pointer-events-none absolute inset-0 -z-10"
-              style={{
-                backgroundImage: `url(${paperDoc})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            <Pin
-              dataPinNode="pin-mob-doc"
-              className="left-[6%] top-[-8px]"
-              label="Top Left Form Pin"
-            />
-            <Pin className="right-[6%] top-[-8px]" label="Top Right Form Pin" />
-
-            <h2 className="font-typewriter text-base sm:text-lg tracking-wide text-ink">
-              SEND US A MESSAGE
-            </h2>
-
-            {sent ? (
-              <div className="mt-3 border border-ink/30 bg-ink/5 p-3.5 font-typewriter text-ink">
-                <div className="flex items-center gap-2 text-xs font-bold text-[oklch(0.42_0.16_27)]">
-                  <span>✔</span>
-                  <span>TRANSMISSION DISPATCHED</span>
-                </div>
-                <p className="mt-2 text-[11px] leading-5 text-ink/85">
-                  Your lead has been encrypted and logged under reference <strong>#IX-8492</strong>.
-                  Our task force is cross-referencing your report.
-                </p>
-                <div className="mt-3 flex justify-center">
-                  <button
-                    type="button"
-                    onClick={handleResetForm}
-                    className="border border-ink/40 bg-[oklch(0.22_0.01_60)] px-5 py-1.5 font-typewriter text-[10px] tracking-widest text-[oklch(0.92_0.02_85)] hover:bg-[oklch(0.28_0.01_60)]"
-                  >
-                    SEND ANOTHER REPORT
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={onSubmit} className="mt-3.5 space-y-2.5">
-                {(["name", "email", "subject"] as const).map((field) => {
-                  const label = field.toUpperCase();
-                  const err = formErrors[field];
-                  return (
-                    <div key={field}>
-                      <input
-                        type={field === "email" ? "email" : "text"}
-                        aria-label={label}
-                        placeholder={label}
-                        value={formData[field]}
-                        onChange={(e) => {
-                          setFormData({ ...formData, [field]: e.target.value });
-                          if (formErrors[field]) {
-                            const updated = { ...formErrors };
-                            delete updated[field];
-                            setFormErrors(updated);
-                          }
-                        }}
-                        className={`paper-field w-full px-3 py-2 font-typewriter text-[11px] tracking-wide transition-all ${
-                          err ? "border-red-600 bg-red-950/10" : ""
-                        }`}
-                      />
-                      {err && (
-                        <p className="mt-0.5 font-typewriter text-[8px] sm:text-[9px] text-red-800">
-                          {err}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-                <div>
-                  <textarea
-                    rows={3}
-                    aria-label="MESSAGE"
-                    placeholder="MESSAGE"
-                    value={formData.message}
-                    onChange={(e) => {
-                      setFormData({ ...formData, message: e.target.value });
-                      if (formErrors.message) {
-                        const updated = { ...formErrors };
-                        delete updated.message;
-                        setFormErrors(updated);
-                      }
-                    }}
-                    className={`paper-field w-full resize-none px-3 py-2 font-typewriter text-[11px] tracking-wide transition-all ${
-                      formErrors.message ? "border-red-600 bg-red-950/10" : ""
-                    }`}
-                  />
-                  {formErrors.message && (
-                    <p className="mt-0.5 font-typewriter text-[8px] sm:text-[9px] text-red-800">
-                      {formErrors.message}
-                    </p>
-                  )}
-                </div>
-
-                {formErrors.form && (
-                  <p
-                    role="alert"
-                    className="border border-red-900/40 bg-red-900/10 px-2.5 py-1.5 font-typewriter text-[9px] leading-4 text-red-800"
-                  >
-                    {formErrors.form}
-                  </p>
-                )}
-                <div className="flex justify-center pt-1">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="flex items-center justify-center gap-2 bg-[oklch(0.22_0.01_60)] w-full py-2.5 font-typewriter text-[11px] tracking-[0.18em] text-[oklch(0.92_0.02_85)] shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all hover:bg-[oklch(0.28_0.01_60)] active:scale-[0.98] disabled:opacity-60 cursor-pointer touch-manipulation"
-                  >
-                    {submitting ? (
-                      <>
-                        <span className="inline-block h-2 w-2 rounded-full bg-gold animate-ping" />
-                        <span>ENCRYPTING...</span>
-                      </>
-                    ) : (
-                      "SUBMIT"
-                    )}
-                  </button>
-                </div>
-              </form>
-            )}
-
-            <h3 className="mt-5 border-b border-ink/30 pb-1 font-typewriter text-sm tracking-wide text-ink">
-              REACH US AT
-            </h3>
-            <ul className="mt-2.5 space-y-1.5 font-typewriter text-[11px] leading-5 text-ink/90">
-              <li className="flex items-start gap-2.5">
-                <MailIcon />
-                <a href="mailto:lead_sc@thapar.edu" className="hover:underline">
-                  lead_sc@thapar.edu
-                </a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <InstagramIcon />
-                <a
-                  href="https://www.instagram.com/lead_tiet/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  @lead_tiet
-                </a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <GithubIcon />
-                <a
-                  href="https://github.com/LEAD-Society-Thapar/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  LEAD-Society-Thapar
-                </a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <PinIcon />
-                <span>
-                  Thapar Institute of Engineering,
-                  <br />
-                  Patiala
-                </span>
-              </li>
-            </ul>
-          </section>
         </div>
       </div>
 

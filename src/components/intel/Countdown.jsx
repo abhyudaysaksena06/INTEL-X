@@ -4,9 +4,9 @@ import "./Countdown.css";
 /*
  * Mission countdown clock for the hero.
  *
- * Counts down to 17:00 on the 5th of September 2026. Edit TARGET to move it.
+ * Counts down to 15:00 on the 5th of September 2026. Edit TARGET to move it.
  */
-const TARGET = new Date(2026, 8, 5, 17, 0, 0);
+const TARGET = new Date(2026, 8, 5, 15, 0, 0);
 
 const pad = (n) => String(Math.max(0, n)).padStart(2, "0");
 
@@ -49,7 +49,7 @@ export function Countdown() {
           </p>
           <span className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan shadow-[0_0_8px_var(--cyan)]" />
-            <span className="hud animate-hud-blink text-cyan/70">05 / 17:00</span>
+            <span className="hud animate-hud-blink text-cyan/70">05 / 15:00</span>
           </span>
         </div>
 
