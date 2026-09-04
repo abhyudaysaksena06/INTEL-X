@@ -1740,7 +1740,7 @@ export default function ContactPage() {
                 aria-label="Inspect Cargo Terminal Perimeter"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["photo-terminal"]);
+                  setActiveEvidenceId((cur) => (cur === "photo-terminal" ? null : "photo-terminal"));
                 }}
                 className={`evidence-interactive photo-shadow relative cursor-pointer bg-[oklch(0.84_0.03_85)] p-1.5 pb-3 rotate-[-1deg] transition-all ${
                   isItemDimmed("photo-terminal")
@@ -1764,7 +1764,7 @@ export default function ContactPage() {
                 />
                 <div className="mt-1 flex items-center justify-between px-0.5 font-typewriter text-[7px] text-ink/80">
                   <span className="truncate">CARGO TERMINAL</span>
-                  <span>[INSPECT]</span>
+                  <span>[TRACE]</span>
                 </div>
               </div>
 
@@ -1775,7 +1775,7 @@ export default function ContactPage() {
                 aria-label="Inspect Charter Cargo Freighter"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["photo-cargo"]);
+                  setActiveEvidenceId((cur) => (cur === "photo-cargo" ? null : "photo-cargo"));
                 }}
                 className={`evidence-interactive photo-shadow relative cursor-pointer bg-[oklch(0.84_0.03_85)] p-1.5 pb-3 rotate-[1deg] transition-all ${
                   isItemDimmed("photo-cargo")
@@ -1799,7 +1799,7 @@ export default function ContactPage() {
                 />
                 <div className="mt-1 flex items-center justify-between px-0.5 font-typewriter text-[7px] text-ink/80">
                   <span className="truncate">CARGO FREIGHTER</span>
-                  <span>[INSPECT]</span>
+                  <span>[TRACE]</span>
                 </div>
               </div>
             </div>
@@ -1817,7 +1817,7 @@ export default function ContactPage() {
                 aria-label="Inspect Commercial Airliner Dusk Approach"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["photo-airliner"]);
+                  setActiveEvidenceId((cur) => (cur === "photo-airliner" ? null : "photo-airliner"));
                 }}
                 className={`evidence-interactive photo-shadow relative cursor-pointer bg-[oklch(0.84_0.03_85)] p-1.5 pb-3 rotate-[-1deg] transition-all ${
                   isItemDimmed("photo-airliner")
@@ -1841,7 +1841,7 @@ export default function ContactPage() {
                 />
                 <div className="mt-1 flex items-center justify-between px-0.5 font-typewriter text-[7px] text-ink/80">
                   <span className="truncate">AIRLINER DUSK</span>
-                  <span>[INSPECT]</span>
+                  <span>[TRACE]</span>
                 </div>
               </div>
 
@@ -1852,7 +1852,7 @@ export default function ContactPage() {
                 aria-label="Inspect Auxiliary Airstrip Recon"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["photo-airfield"]);
+                  setActiveEvidenceId((cur) => (cur === "photo-airfield" ? null : "photo-airfield"));
                 }}
                 className={`evidence-interactive photo-shadow relative cursor-pointer bg-[oklch(0.84_0.03_85)] p-1.5 pb-3 rotate-[1deg] transition-all ${
                   isItemDimmed("photo-airfield")
@@ -1876,7 +1876,7 @@ export default function ContactPage() {
                 />
                 <div className="mt-1 flex items-center justify-between px-0.5 font-typewriter text-[7px] text-ink/80">
                   <span className="truncate">AIRFIELD RECON</span>
-                  <span>[INSPECT]</span>
+                  <span>[TRACE]</span>
                 </div>
               </div>
             </div>
@@ -1886,42 +1886,7 @@ export default function ContactPage() {
           {/* MOBILE CLUSTER 3: TARGET & MANIFEST (Row 3)                    */}
           {/* -------------------------------------------------------------- */}
           <div className="relative mb-5">
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {/* Evidence 5: Hangar 14 */}
-              <div
-                tabIndex={0}
-                role="button"
-                aria-label="Inspect Hangar 14 Night Recon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["photo-hangar"]);
-                }}
-                className={`evidence-interactive photo-shadow relative cursor-pointer bg-[oklch(0.84_0.03_85)] p-1.5 pb-3 rotate-[-1deg] transition-all ${
-                  isItemDimmed("photo-hangar")
-                    ? "evidence-dimmed"
-                    : isItemHighlighted("photo-hangar") || activeEvidenceId === "photo-hangar"
-                      ? "evidence-highlighted scale-[1.02]"
-                      : ""
-                }`}
-              >
-                <Pin
-                  dataPinNode="pin-mob-hangar"
-                  className="left-1/2 top-[-6px]"
-                  label="Hangar Pin"
-                  isActive={activeEvidenceId === "photo-hangar"}
-                  isHighlighted={isItemHighlighted("photo-hangar")}
-                />
-                <img
-                  src={photo3}
-                  alt="Evidence photograph of hangar at night"
-                  className="aspect-[4/3] w-full object-cover contrast-[0.95] saturate-[0.4] brightness-[0.75]"
-                />
-                <div className="mt-1 flex items-center justify-between px-0.5 font-typewriter text-[7px] text-ink/80">
-                  <span className="truncate">HANGAR 14</span>
-                  <span>[INSPECT]</span>
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 gap-3 sm:gap-4">
               {/* Document 6: Case File 07-B */}
               <div
                 tabIndex={0}
@@ -1929,7 +1894,7 @@ export default function ContactPage() {
                 aria-label="Inspect Case File 07-B Manifest Document"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["case-file"]);
+                  setActiveEvidenceId((cur) => (cur === "case-file" ? null : "case-file"));
                 }}
                 className={`evidence-interactive paper-shadow relative flex flex-col justify-between cursor-pointer rotate-[1deg] p-2.5 transition-all ${
                   isItemDimmed("case-file")
@@ -1958,7 +1923,7 @@ export default function ContactPage() {
                   STATUS: OPEN
                 </p>
                 <span className="relative z-10 mt-1.5 block font-typewriter text-[7px] text-gold underline">
-                  [INSPECT DOSSIER]
+                  [TRACE LINKS]
                 </span>
               </div>
             </div>
@@ -1976,7 +1941,7 @@ export default function ContactPage() {
                 aria-label="Inspect Tactical Coordinate Note"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["coord-note"]);
+                  setActiveEvidenceId((cur) => (cur === "coord-note" ? null : "coord-note"));
                 }}
                 className={`evidence-interactive paper-shadow relative flex flex-col justify-between cursor-pointer rotate-[-1deg] p-2.5 transition-all ${
                   isItemDimmed("coord-note")
@@ -2012,7 +1977,7 @@ export default function ContactPage() {
                 aria-label="Inspect Tactical Sector Map"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setModalEvidence(EVIDENCE_DATA["map-evidence"]);
+                  setActiveEvidenceId((cur) => (cur === "map-evidence" ? null : "map-evidence"));
                 }}
                 className={`evidence-interactive paper-shadow relative cursor-pointer rotate-[1deg] p-1.5 pb-3 transition-all bg-[oklch(0.84_0.03_85)] ${
                   isItemDimmed("map-evidence")
@@ -2036,7 +2001,7 @@ export default function ContactPage() {
                 />
                 <div className="mt-1 flex items-center justify-between px-0.5 font-typewriter text-[7px] text-ink/80">
                   <span className="truncate">SECTOR MAP</span>
-                  <span>[INSPECT]</span>
+                  <span>[TRACE]</span>
                 </div>
               </div>
             </div>
